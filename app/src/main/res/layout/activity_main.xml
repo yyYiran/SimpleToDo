@@ -5,30 +5,42 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/btnAdd"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:text="Add" />
+        android:orientation="horizontal"
+        android:weightSum="100"
+        android:id="@+id/llAddTask">
+        <EditText
+            android:id="@+id/etAdd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Add an item here!"
+            android:imeOptions="actionDone"
+            android:padding="10dp"
+            android:layout_weight="80"/>
 
-    <EditText
-        android:id="@+id/etAdd"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_toStartOf="@id/btnAdd"
-        android:hint="Add an item here!"
-        android:padding="10dp"
-        android:imeOptions="actionDone" />
+        <Button
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="10"
+            android:id="@+id/btnPriority"/>
+
+        <Button
+            android:id="@+id/btnAdd"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="10"
+            android:text="Add" />
+    </LinearLayout>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvTasks"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/btnAdd"
+        android:layout_above="@id/llAddTask"
         android:padding="10dp" />
 </RelativeLayout>
