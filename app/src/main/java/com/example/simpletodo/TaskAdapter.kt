@@ -4,12 +4,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 
 /**
  * A bridge that tells RV how to display given data
  */
-class TaskAdapter(val list: MutableList<String>, val operationListener: OperationListener) :
+class TaskAdapter(val list: MutableList<Task>, val operationListener: OperationListener) :
     RecyclerView.Adapter<TaskAdapter.ViewHolder>() {
 
     interface OperationListener {
@@ -27,7 +28,9 @@ class TaskAdapter(val list: MutableList<String>, val operationListener: Operatio
 
         // Set data and methods for each subview
         fun setDataAndMethods(position: Int) {
-            tvTask.text = list.get(position)
+            val task = list.get(position)
+            tvTask.text = task.content.lowercase().replaceFirstChar { it.uppercase() }
+            tvTask.setBackgroundColor(task.priority)
 
             tvTask.setOnClickListener { operationListener.taskClicked(adapterPosition) }
             tvTask.setOnLongClickListener { operationListener.taskLongClicked(adapterPosition);true }
@@ -48,4 +51,16 @@ class TaskAdapter(val list: MutableList<String>, val operationListener: Operatio
         holder.setDataAndMethods(position)
 
     override fun getItemCount(): Int = list.size
+}
+
+private fun TextView.setBackgroundColor(priority: Priority) {
+//    val color =
+    this.setBackgroundColor(
+        when (priority) {
+            Priority.DEFAULT -> ContextCompat.getColor(context, R.color.white_4)
+            Priority.ONE -> ContextCompat.getColor(context, R.color.red_1)
+            Priority.TWO -> ContextCompat.getColor(context, R.color.yellow_2)
+            Priority.THREE -> ContextCompat.getColor(context, R.color.blue_3)
+        }
+    )
 }

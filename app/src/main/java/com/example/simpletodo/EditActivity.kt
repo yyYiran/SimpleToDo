@@ -11,7 +11,7 @@ class EditActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit)
-        supportActionBar?.title = "Edit"
+        supportActionBar?.title = "Edit Task"
 
         // find (sub)Views
         val btnSave = findViewById<Button>(R.id.btnSave)
