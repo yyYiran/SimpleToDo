@@ -21,11 +21,15 @@
             android:padding="10dp"
             android:layout_weight="80"/>
 
-        <Button
-            android:layout_width="30dp"
-            android:layout_height="wrap_content"
+        <ImageView
+            android:layout_width="45dp"
+            android:layout_height="40dp"
+            android:id ="@+id/btnPrioritySelector"
+            android:src="@drawable/ic_color_selector"
             android:layout_weight="10"
-            android:id="@+id/btnPriority"/>
+            android:scaleType="centerInside"
+            android:background="@color/white_4"
+            android:elevation="2dp"/>
 
         <Button
             android:id="@+id/btnAdd"

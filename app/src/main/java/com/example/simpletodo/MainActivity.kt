@@ -4,18 +4,19 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.simpletodo.Priority.Companion.setColorOfPriority
 import org.apache.commons.io.FileUtils
 import java.io.File
 import java.io.IOException
 import java.nio.charset.Charset
-import kotlin.concurrent.fixedRateTimer
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), PriorityDialogFragment.PriorityDialogListener{
     val KEY_TASK_TEXT = "task_text"
     val KEY_TASK_POS = "task_position"
     val REQUEST_CODE_EDIT = 2182
@@ -24,6 +25,8 @@ class MainActivity : AppCompatActivity() {
     lateinit var dataFile: File
 
     lateinit var taskAdapter: TaskAdapter
+
+    var newPriority: Priority = Priority.DEFAULT
 
 //    val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
 //            result -> handleActivityResult(REQUEST_CODE_EDIT, result)
@@ -56,14 +59,14 @@ class MainActivity : AppCompatActivity() {
 
     // Create an anonymous object that implements interface TaskAdapter.OperationListener
     private val operationListener = object : TaskAdapter.OperationListener {
-        override fun taskLongClicked(position: Int) {
+        override fun onTaskLongClicked(position: Int) {
             listOfTasks.removeAt(position)
             taskAdapter.notifyItemRemoved(position)
             saveToFile()
         }
 
         // MainActivity send data to and open EditActivity
-        override fun taskClicked(position: Int) {
+        override fun onTaskClicked(position: Int) {
             // Go to EditActivity, send original task and its position
 //            val intent = Intent(this@MainActivity, EditActivity::class.java)
 //            intent.putExtra(KEY_TASK_TEXT, listOfTasks.get(position).content)
@@ -73,6 +76,8 @@ class MainActivity : AppCompatActivity() {
 //            resultLauncher.launch(intent)
         }
     }
+
+    lateinit var btnPriority: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,7 +92,7 @@ class MainActivity : AppCompatActivity() {
         val btnAdd = findViewById<Button>(R.id.btnAdd)
         val etAdd = findViewById<EditText>(R.id.etAdd)
         val rvTasks = findViewById<RecyclerView>(R.id.rvTasks)
-        val btnPriority = findViewById<Button>(R.id.btnPriority)
+        btnPriority = findViewById(R.id.btnPrioritySelector)
 
         /**
          * Add a task
@@ -95,11 +100,13 @@ class MainActivity : AppCompatActivity() {
         // TODO: press `enter` to add task
         // TODO: priority color picker at add-time (fragment)
         btnAdd.setOnClickListener {
-            val taskToAdd = etAdd.text.toString()
+            val taskToAdd: String = etAdd.text.toString()
 
             if (!taskToAdd.isNullOrBlank()) {
                 // Update data model
-                listOfTasks.add(Task(taskToAdd))
+                val task = Task(taskToAdd, newPriority)
+                Log.d("MainA btnAdd", task.content + ", " + task.priority)
+                listOfTasks.add(task)
 
                 // Notify adapter, scroll to new item
                 taskAdapter.notifyItemInserted(listOfTasks.size - 1)
@@ -111,9 +118,10 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        btnPriority.setOnClickListener { showPriorityDialog() }
-
-
+        // TODO: Select priority
+        btnPriority.setOnClickListener {
+            showPriorityDialog()
+        }
 
         // Set adapter and layoutManager for RV
         taskAdapter = TaskAdapter(listOfTasks, operationListener)
@@ -133,8 +141,8 @@ class MainActivity : AppCompatActivity() {
         } catch (e: IOException) {
             e.printStackTrace()
         }
-        Log.d("lemon saveToFile()", "datafile: " + dataFile.readLines())
-        Log.d("lemon saveToFile()", "listOfTasks = " + listOfTasks)
+        Log.d("MainA saveToFile()", "datafile: " + dataFile.readLines())
+        Log.d("MainA saveToFile()", "listOfTasks = " + listOfTasks)
     }
     // TODO: inline function use
 
@@ -147,13 +155,18 @@ class MainActivity : AppCompatActivity() {
             e.printStackTrace()
         }
 
-        Log.d("lemon loadFromFile()", "datafile: " + dataFile.readLines())
-        Log.d("lemon loadFromFile()", "listOfTasks = " + listOfTasks)
+        Log.d("MainA loadFromFile()", "datafile: " + dataFile.readLines())
+        Log.d("MainA loadFromFile()", "listOfTasks = " + listOfTasks)
     }
 
     private fun showPriorityDialog(){
         val priorityDialog = PriorityDialogFragment.newInstance()
         priorityDialog.show(supportFragmentManager, "Priority picker")
+    }
+
+    override fun onPrioritySelected(priority: Priority) {
+        btnPriority.setColorOfPriority(priority)
+        newPriority = priority
     }
 
 }

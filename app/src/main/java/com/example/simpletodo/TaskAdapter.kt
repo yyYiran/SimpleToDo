@@ -1,11 +1,13 @@
 package com.example.simpletodo
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.example.simpletodo.Priority.Companion.setColorOfPriority
 
 /**
  * A bridge that tells RV how to display given data
@@ -14,8 +16,8 @@ class TaskAdapter(val list: MutableList<Task>, val operationListener: OperationL
     RecyclerView.Adapter<TaskAdapter.ViewHolder>() {
 
     interface OperationListener {
-        fun taskLongClicked(position: Int)
-        fun taskClicked(position: Int)
+        fun onTaskLongClicked(position: Int)
+        fun onTaskClicked(position: Int)
     }
 
     /**
@@ -30,10 +32,11 @@ class TaskAdapter(val list: MutableList<Task>, val operationListener: OperationL
         fun setDataAndMethods(position: Int) {
             val task = list.get(position)
             tvTask.text = task.content.lowercase().replaceFirstChar { it.uppercase() }
-            tvTask.setBackgroundColor(task.priority)
+            // TODO: tvTask set background color
+            tvTask.setColorOfPriority(task.priority)
 
-            tvTask.setOnClickListener { operationListener.taskClicked(adapterPosition) }
-            tvTask.setOnLongClickListener { operationListener.taskLongClicked(adapterPosition);true }
+            tvTask.setOnClickListener { operationListener.onTaskClicked(adapterPosition) }
+            tvTask.setOnLongClickListener { operationListener.onTaskLongClicked(adapterPosition);true }
         }
     }
 
@@ -53,14 +56,4 @@ class TaskAdapter(val list: MutableList<Task>, val operationListener: OperationL
     override fun getItemCount(): Int = list.size
 }
 
-private fun TextView.setBackgroundColor(priority: Priority) {
-//    val color =
-    this.setBackgroundColor(
-        when (priority) {
-            Priority.DEFAULT -> ContextCompat.getColor(context, R.color.white_4)
-            Priority.ONE -> ContextCompat.getColor(context, R.color.red_1)
-            Priority.TWO -> ContextCompat.getColor(context, R.color.yellow_2)
-            Priority.THREE -> ContextCompat.getColor(context, R.color.blue_3)
-        }
-    )
-}
+

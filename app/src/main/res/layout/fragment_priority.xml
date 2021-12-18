@@ -6,10 +6,42 @@
     tools:context=".PriorityDialogFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
-        style="@style/TaskContentStyle"
+    <RadioGroup
+        android:id="@+id/rgPriorities"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <RadioButton
+            android:id="@+id/rbP1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/red_1"
+            android:text="Priority 1"/>
+        <RadioButton
+            android:id="@+id/rbP2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/yellow_2"
+            android:text="Priority 2"/>
+        <RadioButton
+            android:id="@+id/rbP3"
+            android:background="@color/blue_3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Priority 3"/>
+        <RadioButton
+            android:id="@+id/rbP4"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="No priority"/>
+    </RadioGroup>
+
+    <Button
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_below="@id/rgPriorities"
+        android:layout_alignParentRight="true"
+        android:text="Save"
+        android:id="@+id/btnPrioritySave"/>
+
 
 </RelativeLayout>

@@ -1,5 +1,7 @@
 package com.example.simpletodo
 
+import android.view.View
+import androidx.core.content.ContextCompat
 import kotlin.random.Random
 
 // TODO: more about enum class: values() as Array<Priority>
@@ -8,7 +10,18 @@ enum class Priority {
 
     companion object {
         fun random() = values()[Random.nextInt(values().size)]
+
+        fun View.setColorOfPriority (priority: Priority) {
+            this.setBackgroundColor(when (priority) {
+                DEFAULT -> ContextCompat.getColor(context, R.color.white_4)
+                ONE -> ContextCompat.getColor(context, R.color.red_1)
+                TWO -> ContextCompat.getColor(context, R.color.yellow_2)
+                THREE -> ContextCompat.getColor(context, R.color.blue_3)
+            })
+        }
     }
+
+
 }
 
 class Task(val content: String, val priority: Priority = Priority.DEFAULT) {
