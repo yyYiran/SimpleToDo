@@ -20,7 +20,10 @@ The following **optional** features are implemented:
 
 The following **additional** features are implemented:
 
-* [ ] List anything else that you can get done to improve the app functionality!
+* [x] User can **select and change the priority** of each todo item
+* [ ] User can **select and change the due date** of each todo item
+* [ ] **Sort list** based on priority or due date
+* [ ] Settings page to change theme
 
 ## Video Walkthrough
 
