@@ -2,17 +2,16 @@ package com.example.simpletodo
 
 import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.RadioButton
 import android.widget.RadioGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
-import java.lang.ClassCastException
+import androidx.fragment.app.Fragment
 
-// TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val KEY_PRIORITY = "key_priority"
 
@@ -24,6 +23,9 @@ private const val KEY_PRIORITY = "key_priority"
 class PriorityDialogFragment : DialogFragment() {
 
     lateinit var priorityDialogListener: PriorityDialogListener
+
+    // Pass in selected priority(->color) through interface PriorityDialogListener
+    // Reusability of fragment
     interface PriorityDialogListener{
         fun onPrioritySelected(priority: Priority)
     }
@@ -36,14 +38,18 @@ class PriorityDialogFragment : DialogFragment() {
          * @param priority: Priority that corresponds to a color
          * @return A new instance of fragment PriorityFragment.
          */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance() = PriorityDialogFragment()
-//        fun newInstance(priority: Priority) = PriorityDialogFragment().apply {
-//            arguments = Bundle().apply {
-//                putString(KEY_PRIORITY, priority.name)
-//            }
-//        }
+//        fun newInstance() = PriorityDialogFragment()
+        fun newInstance(priority: Priority) = PriorityDialogFragment().apply {
+            arguments = Bundle().apply {
+                putSerializable(KEY_PRIORITY, priority)
+            }
+        }
+
+        fun showPriorityDialog(appCompatActivity: AppCompatActivity, priority: Priority) {
+            val priorityDialog = newInstance(priority)
+            priorityDialog.show(appCompatActivity.supportFragmentManager, "Priority picker")
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,16 +71,26 @@ class PriorityDialogFragment : DialogFragment() {
 //        val rbP3 = view.findViewById<RadioGroup>(R.id.rbP3)
 //        val rbP4 = view.findViewById<RadioGroup>(R.id.rbP4)
 
+        // TODO: remember what was selected
+        var newPriority = arguments?.getSerializable(KEY_PRIORITY) as Priority
+        rgPriorities.check(Priority.findRadioButtonId(newPriority))
+        Log.d("PriorityDF", "newPriority is " + newPriority)
+
+        // (Re)Select priority via radioGroup
         rgPriorities.setOnCheckedChangeListener { radioGroup, checkedId ->
-            when (checkedId) {
-                R.id.rbP1 -> priorityDialogListener.onPrioritySelected(Priority.ONE)
-                R.id.rbP2 -> priorityDialogListener.onPrioritySelected(Priority.TWO)
-                R.id.rbP3 -> priorityDialogListener.onPrioritySelected(Priority.THREE)
-                else -> priorityDialogListener.onPrioritySelected(Priority.DEFAULT)
+
+            newPriority = when (checkedId) {
+                R.id.rbP1 -> Priority.ONE
+                R.id.rbP2 -> Priority.TWO
+                R.id.rbP3 -> Priority.THREE
+                else -> Priority.DEFAULT
             }
         }
 
         btnPrioritySave.setOnClickListener {
+            priorityDialogListener.onPrioritySelected(newPriority)
+//            rgPriorities.check(findRadioButtonId(newPriority))
+//            Log.d("PriorityDF", "newPriority is " + newPriority)
             dismiss()
         }
 
@@ -96,4 +112,8 @@ class PriorityDialogFragment : DialogFragment() {
         }
     }
 
+//    override fun onDetach() {
+//        super.onDetach()
+//        priorityDialogListener = null
+//    }
 }

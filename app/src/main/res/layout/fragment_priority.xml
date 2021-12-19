@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="240dp"
     android:layout_height="wrap_content"
-    tools:context=".PriorityDialogFragment">
+    tools:context=".PriorityDialogFragment"
+    android:padding="5dp">
 
     <!-- TODO: Update blank fragment layout -->
     <RadioGroup
