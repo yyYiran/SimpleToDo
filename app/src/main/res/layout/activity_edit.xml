@@ -13,7 +13,7 @@
         android:layout_alignParentTop="true"
         android:minHeight="50dp"
         android:paddingStart="10dp"
-        android:text="bubiubib"/>
+        android:text="Modified task" />
 
     <Button
         android:id="@+id/btnSave"
@@ -29,9 +29,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/etEdit"
         android:layout_alignBottom="@+id/btnSave"
-        android:layout_marginBottom="5dp"
         android:layout_marginTop="5dp"
         android:layout_marginRight="5dp"
+        android:layout_marginBottom="5dp"
         android:layout_toLeftOf="@id/btnSave"
         android:background="@color/red_1"
         android:elevation="2dp"

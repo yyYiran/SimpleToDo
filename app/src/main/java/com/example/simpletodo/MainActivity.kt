@@ -104,7 +104,7 @@ class MainActivity : AppCompatActivity(), PriorityDialogFragment.PriorityDialogL
         val btnAdd = findViewById<Button>(R.id.btnAdd)
         val etAdd = findViewById<EditText>(R.id.etAdd)
         val rvTasks = findViewById<RecyclerView>(R.id.rvTasks)
-        btnPriority = findViewById(R.id.btnPrioritySelector)
+        btnPriority = findViewById(R.id.btnPrioritySelectorMain)
 
         /**
          * Add a task
