@@ -21,9 +21,11 @@ The following **optional** features are implemented:
 The following **additional** features are implemented:
 
 * [x] User can **select and change the priority** of each todo item
-* [ ] User can **select and change the due date** of each todo item
+* [x] User can **select and change the due date** of each todo item
 * [ ] **Sort list** based on priority or due date
 * [ ] Settings page to change theme
+* [ ] Group study space, see study hours of people in joined study room
+* [ ] Tomato clock to manage productivity and record study time
 
 ## Video Walkthrough
 
