@@ -4,7 +4,7 @@
 
 Submitted by: **Yiran Wan**
 
-Time spent: **20** hours spent in total
+Time spent: **20** hours spent in total (21.12.15)
 
 ## User Stories
 
