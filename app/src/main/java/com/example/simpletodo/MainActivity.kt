@@ -1,17 +1,17 @@
 package com.example.simpletodo
 
+import android.annotation.TargetApi
 import android.app.Activity
+import android.app.DatePickerDialog
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
+import android.widget.*
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simpletodo.Priority.Companion.getPriorityofColor
@@ -20,21 +20,26 @@ import org.apache.commons.io.FileUtils
 import java.io.File
 import java.io.IOException
 import java.nio.charset.Charset
+import java.util.*
+import kotlin.collections.ArrayList
 
 //val KEY_TASK_TEXT = "task_text"
-val KEY_TASK_BUNDLE = "task_bundle"
-val KEY_TASK_POS = "task_position"
-val REQUEST_CODE_EDIT = 2182
+const val KEY_TASK_BUNDLE = "task_bundle"
+const val KEY_TASK_POS = "task_position"
+const val REQUEST_CODE_EDIT = 2182
+private const val TAG = "MainA:"
 
-class MainActivity : AppCompatActivity(), PriorityDialogFragment.PriorityDialogListener {
+class MainActivity : AppCompatActivity(), PriorityDialogFragment.PriorityDialogListener{
 
-
+    // Data model
     val listOfTasks = ArrayList<Task>()
+    // Data storage
     lateinit var dataFile: File
-
+    // ItemAdapter, access to item views like tvContent, tvDate
     lateinit var taskAdapter: TaskAdapter
 
     var newPriority: Priority = Priority.DEFAULT
+
     lateinit var btnPriority: ImageView
 
     val resultLauncher =
@@ -43,12 +48,12 @@ class MainActivity : AppCompatActivity(), PriorityDialogFragment.PriorityDialogL
         }
 
     // How MainActivity deal with data from EditActivity
+    @TargetApi(Build.VERSION_CODES.N)
     private fun handleActivityResult(requestCode: Int, result: ActivityResult) {
         if (result.resultCode == Activity.RESULT_OK) {
             // getData() returns intent
 //            val bundle = result.data?.extras
             val intent = result.data
-
             when (requestCode) {
                 REQUEST_CODE_EDIT -> {
                     // Get data from EditActivity
@@ -62,7 +67,7 @@ class MainActivity : AppCompatActivity(), PriorityDialogFragment.PriorityDialogL
                         saveToFile()
                     }
                 }
-                else -> Log.e("handleActivityResult", "Wrong request code")
+                else -> Log.e(TAG + "handle..Result", "Wrong request code")
             }
         }
 
@@ -76,6 +81,7 @@ class MainActivity : AppCompatActivity(), PriorityDialogFragment.PriorityDialogL
             saveToFile()
         }
 
+        // Edit task content
         // MainActivity send data to and open EditActivity
         override fun onTaskClicked(position: Int) {
             // Go to EditActivity, send original task and its position
@@ -83,9 +89,17 @@ class MainActivity : AppCompatActivity(), PriorityDialogFragment.PriorityDialogL
             intent.putExtra(KEY_TASK_BUNDLE, listOfTasks.get(position))
 //            intent.putExtra(KEY_TASK_TEXT, listOfTasks.get(position).content)
             intent.putExtra(KEY_TASK_POS, position)
-
 //            // handle updated task from EditActivity
             resultLauncher.launch(intent)
+        }
+
+        override fun onDateClicked(position: Int) {
+            Log.d(TAG + "1 onDateClicked", listOfTasks.get(position).content + " clicked")
+            // TODO: Select a new date for the task (DatePickerDialog)
+            setDate(position)
+            Log.d(TAG+"3 onDateClicked", listOfTasks.get(position).date.get(Calendar.MONTH).toString()
+                    + "/" + listOfTasks.get(position).date.get(Calendar.DAY_OF_MONTH).toString())
+            // TODO: save date to file
         }
     }
 
@@ -114,8 +128,9 @@ class MainActivity : AppCompatActivity(), PriorityDialogFragment.PriorityDialogL
             val taskToAdd: String = etAdd.text.toString()
             if (!taskToAdd.isNullOrBlank()) {
                 // Update data model
+                    // TODO: date property of task
                 val task = Task(taskToAdd, newPriority)
-                Log.d("MainA btnAdd", task.content + ", " + task.priority)
+                Log.d(TAG + "btnAdd", task.content + ", " + task.priority)
                 listOfTasks.add(task)
 
                 // Notify adapter, scroll to new item
@@ -146,12 +161,13 @@ class MainActivity : AppCompatActivity(), PriorityDialogFragment.PriorityDialogL
     // model -> file
     private fun saveToFile() {
         try {
+
             FileUtils.writeLines(dataFile, listOfTasks)
         } catch (e: IOException) {
             e.printStackTrace()
         }
-        Log.d("MainA saveToFile()", "datafile: " + dataFile.readLines())
-        Log.d("MainA saveToFile()", "listOfTasks = " + listOfTasks)
+        Log.d(TAG + "saveToFile", "datafile: " + dataFile.readLines())
+        Log.d(TAG + "saveToFile", "listOfTasks = " + listOfTasks)
     }
 
     // load from file to model, when start
@@ -159,19 +175,14 @@ class MainActivity : AppCompatActivity(), PriorityDialogFragment.PriorityDialogL
         try {
             // Parse every line from dataFile, create Task, add to listOfTasks
             listOfTasks.addAll(
-                Task.stringsToTasks(
-                    FileUtils.readLines(
-                        dataFile,
-                        Charset.defaultCharset()
-                    )
-                )
+                Task.parseStringsToTasks(FileUtils.readLines(dataFile, Charset.defaultCharset()))
             )
         } catch (e: IOException) {
             e.printStackTrace()
         }
 
-        Log.d("MainA loadFromFile()", "datafile: " + dataFile.readLines())
-        Log.d("MainA loadFromFile()", "listOfTasks = " + listOfTasks)
+        Log.d(TAG + "loadFromFile", "datafile: " + dataFile.readLines())
+        Log.d(TAG + "loadFromFile", "listOfTasks = " + listOfTasks)
     }
 
 //    fun showPriorityDialog() {
@@ -183,5 +194,30 @@ class MainActivity : AppCompatActivity(), PriorityDialogFragment.PriorityDialogL
         btnPriority.setColorOfPriority(priority)
         newPriority = priority
     }
+
+
+    fun setDate(position: Int){
+        val tmpdate = listOfTasks[position].date
+        val year = tmpdate.get(Calendar.YEAR)
+        val month = tmpdate.get(Calendar.MONTH)
+        val day = tmpdate.get(Calendar.DAY_OF_MONTH)
+        Log.d(TAG + "1.5 setDate", "default date is " + month + "/" +day)
+        // onDateSet is the only method of interface DatePickerDialog.OnDateSetListener
+        // It's called when user change date + click "OK"
+        DatePickerDialog(this,
+            DatePickerDialog.OnDateSetListener{ _, year, month, day
+                -> listOfTasks[position].date.set(year, month, day)
+                val datetmp = listOfTasks[position].date
+                Log.d(TAG + "4 setDate", "we set day to be " + datetmp.get(Calendar.MONTH) + "/" + datetmp.get(Calendar.DAY_OF_MONTH))
+                taskAdapter.notifyItemChanged(position)
+                saveToFile()
+                Log.d(TAG + "5 setDate", "notify adapter " + datetmp.get(Calendar.MONTH) + "/" + datetmp.get(Calendar.DAY_OF_MONTH))}, // notify adapter IMMEDIATELY
+            year, month, day)
+            .show()
+        // When picker pops out, before you change date, display you last selected date
+        val date = listOfTasks[position].date
+        Log.d(TAG + "2 setDate", date.get(Calendar.MONTH).toString()+"/"+date.get(Calendar.DAY_OF_MONTH).toString())
+    }
+
 
 }

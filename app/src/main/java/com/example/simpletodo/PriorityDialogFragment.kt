@@ -14,7 +14,7 @@ import androidx.fragment.app.Fragment
 
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val KEY_PRIORITY = "key_priority"
-
+private const val TAG = "PriorityDF"
 /**
  * A simple [Fragment] subclass.
  * Use the [PriorityDialogFragment.newInstance] factory method to
@@ -65,16 +65,12 @@ class PriorityDialogFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val rgPriorities = view.findViewById<RadioGroup>(R.id.rgPriorities)
-        val btnPrioritySave = view.findViewById<Button>(R.id.btnPrioritySave)
-//        val rbP1 = view.findViewById<RadioGroup>(R.id.rbP1)
-//        val rbP2 = view.findViewById<RadioGroup>(R.id.rbP2)
-//        val rbP3 = view.findViewById<RadioGroup>(R.id.rbP3)
-//        val rbP4 = view.findViewById<RadioGroup>(R.id.rbP4)
+        val btnPriorityOK = view.findViewById<Button>(R.id.btnPriorityOK)
 
         // TODO: remember what was selected
         var newPriority = arguments?.getSerializable(KEY_PRIORITY) as Priority
         rgPriorities.check(Priority.findRadioButtonId(newPriority))
-        Log.d("PriorityDF", "newPriority is " + newPriority)
+        Log.d(TAG + "onViewCreated", "newPriority is " + newPriority)
 
         // (Re)Select priority via radioGroup
         rgPriorities.setOnCheckedChangeListener { radioGroup, checkedId ->
@@ -87,15 +83,15 @@ class PriorityDialogFragment : DialogFragment() {
             }
         }
 
-        btnPrioritySave.setOnClickListener {
+        btnPriorityOK.setOnClickListener {
             priorityDialogListener.onPrioritySelected(newPriority)
-//            rgPriorities.check(findRadioButtonId(newPriority))
 //            Log.d("PriorityDF", "newPriority is " + newPriority)
             dismiss()
         }
 
 
     }
+
 
     // Where to send "priority" as input?
         // to an activity that implements the interface

@@ -40,7 +40,7 @@ class EditActivity : AppCompatActivity(), PriorityDialogFragment.PriorityDialogL
         btnSave.setOnClickListener {
             val intent = Intent()
 //            intent.putExtra("task_text", etEdit.text.toString())
-            intent.putExtra("task_position", position)
+            intent.putExtra(KEY_TASK_POS, position)
             // TODO: Input updated priority, rather than (fixed) ONE
             intent.putExtra(KEY_TASK_BUNDLE, Task(etEdit.text.toString(), newPriority))
             setResult(RESULT_OK, intent)

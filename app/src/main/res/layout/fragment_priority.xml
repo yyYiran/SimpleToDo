@@ -41,8 +41,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/rgPriorities"
         android:layout_alignParentRight="true"
-        android:text="Save"
-        android:id="@+id/btnPrioritySave"/>
+        android:text="OK"
+        android:id="@+id/btnPriorityOK"/>
 
 
 </RelativeLayout>
